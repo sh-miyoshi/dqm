@@ -5,8 +5,6 @@ class Fps{
 	unsigned int count, baseCnt;
 	int *frame;
 public:
-	static const int FPS = 60;
-
 	Fps();
 	~Fps();
 

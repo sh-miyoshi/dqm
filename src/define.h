@@ -6,6 +6,7 @@ namespace def{
 	const int FMX = 640;
 	const int FMY = 480;
 	const int CHAR_IMAGE_RECT_SIZE = 32;
+	const int FPS = 60;
 
 	enum Muki{
 		eMUKI_UP,

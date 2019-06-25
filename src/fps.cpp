@@ -1,11 +1,11 @@
-#include "DxLib.h"
+#include "include.h"
 #include "fps.h"
 
 Fps::Fps(){
 	ave = 0.0f;
 	count = 0;
 	baseCnt = 0;
-	frame = new int[FPS];
+	frame = new int[def::FPS];
 }
 
 Fps::~Fps(){
@@ -24,7 +24,7 @@ void Fps::Process(){
 	if( count == 0 )
 		term = ( t == 0 ) ? 0 : baseCnt + 1000 - GetNowCount();
 	else
-		term = ( int ) ( baseCnt + count*( 1000.0 / FPS ) ) - GetNowCount();
+		term = ( int ) ( baseCnt + count*( 1000.0 / def::FPS ) ) - GetNowCount();
 
 	if( term > 0 )
 		Sleep(term);
@@ -34,11 +34,11 @@ void Fps::Process(){
 		baseCnt = gnt;
 	frame[count] = gnt - t;
 	t = gnt;
-	if( count == FPS - 1 ){
+	if( count == def::FPS - 1 ){
 		ave = 0;
-		for( int i = 0; i < FPS; i++ )
+		for( int i = 0; i < def::FPS; i++ )
 			ave += frame[i];
-		ave /= FPS;
+		ave /= def::FPS;
 	}
-	count = ( ++count ) % FPS;
+	count = ( ++count ) % def::FPS;
 }

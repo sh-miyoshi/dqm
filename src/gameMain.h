@@ -53,6 +53,7 @@ private:
 	};
 
 	class StateBattleIn:public StateBase{
+		int count;
 		GameMain *obj;
 	public:
 		StateBattleIn(GameMain *obj);

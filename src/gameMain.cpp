@@ -119,21 +119,24 @@ void GameMain::StateMenu::Process(){
 //--------------------------------------
 // í“¬‘Oˆ—
 //--------------------------------------
-GameMain::StateBattleIn::StateBattleIn(GameMain *obj):obj(obj){
+GameMain::StateBattleIn::StateBattleIn(GameMain *obj):obj(obj),count(0){
 }
 
 GameMain::StateBattleIn::~StateBattleIn(){
 }
 
 void GameMain::StateBattleIn::Draw(){
-	DrawString(def::FMX/2-40,def::FMY/2-20,"í“¬‘Oˆ—",WHITE);
-	DrawString(def::FMX/2-40,def::FMY/2+40,"Œˆ’è: í“¬",WHITE);
+	MapMgr::GetInst()->Draw();
+
+	DrawString(def::FMX/2-40,def::FMY/2-20,"í“¬‘Oˆ—",RED);
+	DrawString(def::FMX/2-40,def::FMY/2+40,"5•bŒã í“¬",RED);
 }
 
 void GameMain::StateBattleIn::Process(){
-	if(CKey::GetInst()->CheckKey(eKEY_ENTER)==1){
+	if (count >= 5 * def::FPS) {
 		obj->stateMgr.PushState(new StateBattle(obj));
 	}
+	count++;
 }
 
 //--------------------------------------

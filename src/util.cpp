@@ -1,6 +1,6 @@
 #include <stdarg.h>
+#include "include.h"
 #include "util.h"
-#include "fps.h"
 #include "appLogger.h"
 
 void IsAbleToOpenFile(bool cnd, std::string position, std::string fileName){
@@ -71,8 +71,8 @@ std::string ToString(const char *format, ...){
 }
 
 std::string ChangeViewCount(unsigned long long count){
-	int ms = ( int ) ( ( float ) ( count%Fps::FPS ) / Fps::FPS ) * 100;// ƒ~ƒŠ•b(3Œ…)
-	count /= Fps::FPS;
+	int ms = ( int ) ( ( float ) ( count% def::FPS ) / def::FPS ) * 100;// ƒ~ƒŠ•b(3Œ…)
+	count /= def::FPS;
 	int s = count % 60;
 	count -= s;
 	count /= 60;

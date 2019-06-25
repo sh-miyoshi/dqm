@@ -115,8 +115,7 @@ MapMovePlayer::RtnCode MapMovePlayer::Process(MapField fieldData) {
 	if( CKey::GetInst()->CheckKey(eKEY_ENTER) == 1 ) {
 		// TODO(エベントが存在したときのみイベント処理に移行)
 		return RTN_EVENT;
-	} else if( CheckHitKey(KEY_INPUT_B) == 1 )// debug(戦闘移行はイベントで発生)
-		return RTN_ENCOUNT;
+	}
 
 	return RTN_CONTINUE;
 }
