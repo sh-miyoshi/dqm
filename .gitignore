@@ -1,0 +1,8 @@
+Log.txt
+*.filters
+*.user
+*.db
+.vs/
+
+tmp/
+Debug/
