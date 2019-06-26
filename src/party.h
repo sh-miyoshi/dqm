@@ -13,6 +13,8 @@ class Party {
 	Party():money(0){}
 	~Party() {}
 public:
+	static const int PARTY_MAX_NUM = 3;
+
 	static Party *GetInst() {
 		static Party inst;
 		return &inst;

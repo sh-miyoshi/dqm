@@ -1,12 +1,15 @@
 #include "include.h"
 #include "battle.h"
+#include "party.h"
 
-Battle::Battle()
-{
+Battle::Battle(){
+	// Get Party Data
+	party = Party::GetInst()->GetParty();
+
+	// TODO(Set Enemy Data)
 }
 
-Battle::~Battle()
-{
+Battle::~Battle(){
 }
 
 void Battle::Draw(){

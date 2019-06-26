@@ -128,12 +128,14 @@ GameMain::StateBattleIn::~StateBattleIn(){
 }
 
 void GameMain::StateBattleIn::Draw(){
+#if !DEBUG_SKIP_BATTLE_IN
 	MapMgr::GetInst()->Draw();
 
 	DrawBox(0, 0, def::FMX, count, GetColor(0, 0, 0), TRUE);
 	DrawBox(0, 0, count, def::FMY, GetColor(0, 0, 0), TRUE);
 	DrawBox(0, def::FMY, def::FMX, def::FMY - count, GetColor(0, 0, 0), TRUE);
 	DrawBox(def::FMX, 0, def::FMX - count, def::FMY, GetColor(0, 0, 0), TRUE);
+#endif
 }
 
 void GameMain::StateBattleIn::Process(){

@@ -72,6 +72,7 @@ void Menu::MenuTop::Process() {
 	// TODO(Menu‚ª‘I‘ð‚³‚ê‚½Žž‚Ìˆ—‚ð’Ç‰Á)
 	switch( obj->winMgr.MoveCursor() ) {
 	case 0:// ‚Â‚æ‚³
+		obj->stateMgr.PushState(new MenuPower(obj));
 		break;
 	case 1:// “Á‹Z
 		break;
@@ -83,4 +84,32 @@ void Menu::MenuTop::Process() {
 
 	if( CKey::GetInst()->CheckKey(eKEY_CANCEL) == 1 )
 		obj->rtnCode = Menu::RTN_END;
+}
+
+//-------------------------------------------------------
+// ‚Â‚æ‚³
+//-------------------------------------------------------
+Menu::MenuPower::MenuPower(Menu* obj):obj(obj), infoWinNo(-1), selWinNo(-1){
+	infoWinNo = obj->winMgr.New(310, 50, 9, 10);
+
+	selWinNo = obj->winMgr.New(120, 60, Party::PARTY_MAX_NUM, 5);
+	std::list<std::string> lstr;
+	for(auto c : Party::GetInst()->GetParty())
+		lstr.push_back(c.nickName);
+	obj->winMgr.SetList(lstr);
+}
+
+Menu::MenuPower::~MenuPower(){
+	obj->winMgr.Delete(infoWinNo);
+	obj->winMgr.Delete(selWinNo);
+}
+
+void Menu::MenuPower::Process(){
+	int prevCursor = obj->winMgr.GetCursor();
+
+	obj->winMgr.MoveCursor();
+	if (obj->winMgr.GetCursor() != prevCursor) {
+		// TODO(UpdateParam Info)
+	}else if (CKey::GetInst()->CheckKey(eKEY_CANCEL) == 1)
+		obj->stateMgr.PopState();
 }

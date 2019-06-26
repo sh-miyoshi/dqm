@@ -23,7 +23,7 @@ private:
 	};
 
 	// TODO(‚Â‚æ‚³‰æ–Ê‚Ì•\Ž¦ƒNƒ‰ƒX‚ð’Ç‰Á)
-/*	class MenuPower:public StateBase {
+	class MenuPower:public StateBase {
 		int selWinNo;
 		int infoWinNo;
 		Menu *obj;
@@ -32,7 +32,7 @@ private:
 		~MenuPower();
 
 		void Process();
-	};*/
+	};
 
 	std::vector<int> charParamWinNo;
 	RtnCode rtnCode;
