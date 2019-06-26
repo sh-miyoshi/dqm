@@ -1,6 +1,8 @@
 #include "include.h"
 #include "gameMain.h"
 
+#define DEBUG_SKIP_BATTLE_IN 1 // debug(set 0 in production)
+
 GameMain::GameMain():result(RTN_CONTINUE){
 	stateMgr.PushState(new StateMapMove(this));// debug(‚Æ‚è‚ ‚¦‚¸Å‰‚Íƒ}ƒbƒvˆÚ“®‚Å)
 }
@@ -128,15 +130,21 @@ GameMain::StateBattleIn::~StateBattleIn(){
 void GameMain::StateBattleIn::Draw(){
 	MapMgr::GetInst()->Draw();
 
-	DrawString(def::FMX/2-40,def::FMY/2-20,"í“¬‘Oˆ—",RED);
-	DrawString(def::FMX/2-40,def::FMY/2+40,"5•bŒã í“¬",RED);
+	DrawBox(0, 0, def::FMX, count, GetColor(0, 0, 0), TRUE);
+	DrawBox(0, 0, count, def::FMY, GetColor(0, 0, 0), TRUE);
+	DrawBox(0, def::FMY, def::FMX, def::FMY - count, GetColor(0, 0, 0), TRUE);
+	DrawBox(def::FMX, 0, def::FMX - count, def::FMY, GetColor(0, 0, 0), TRUE);
 }
 
 void GameMain::StateBattleIn::Process(){
-	if (count >= 5 * def::FPS) {
+#if DEBUG_SKIP_BATTLE_IN
+	obj->stateMgr.PushState(new StateBattle(obj));
+#else
+	if (count >= def::FMY / 2) {
 		obj->stateMgr.PushState(new StateBattle(obj));
 	}
-	count++;
+	count+=5;
+#endif
 }
 
 //--------------------------------------
@@ -149,15 +157,17 @@ GameMain::StateBattle::~StateBattle(){
 }
 
 void GameMain::StateBattle::Draw(){
-	DrawString(def::FMX/2-40,def::FMY/2-20,"í“¬’†",WHITE);
-	DrawString(def::FMX/2-40,def::FMY/2+40,"Œˆ’è: Ÿ—˜",WHITE);
-	DrawString(def::FMX/2-40,def::FMY/2+60,"ƒLƒƒƒ“ƒZƒ‹: ”s–k",WHITE);
+	battle.Draw();
 }
 
 void GameMain::StateBattle::Process(){
-	if(CKey::GetInst()->CheckKey(eKEY_ENTER)==1){
+	switch (battle.Process()) {
+	case Battle::eRTN_WIN:
+		// TODO(Set Party Data)
 		obj->stateMgr.BackToMark();
-	} else if(CKey::GetInst()->CheckKey(eKEY_CANCEL)==1){
-		obj->result=GameMain::RTN_GAMEOVER;
+		break;
+	case Battle::eRTN_LOSE:
+		obj->result = GameMain::RTN_GAMEOVER;
+		break;
 	}
 }

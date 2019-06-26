@@ -154,6 +154,7 @@
   <ItemGroup>
     <ClCompile Include="src\aes.cpp" />
     <ClCompile Include="src\appLogger.cpp" />
+    <ClCompile Include="src\battle.cpp" />
     <ClCompile Include="src\charData.cpp" />
     <ClCompile Include="src\config.cpp" />
     <ClCompile Include="src\csv.cpp" />
@@ -176,6 +177,7 @@
   <ItemGroup>
     <ClInclude Include="src\aes.h" />
     <ClInclude Include="src\appLogger.h" />
+    <ClInclude Include="src\battle.h" />
     <ClInclude Include="src\charData.h" />
     <ClInclude Include="src\config.h" />
     <ClInclude Include="src\csv.h" />

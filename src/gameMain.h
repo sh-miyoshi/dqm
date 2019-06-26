@@ -3,6 +3,7 @@
 #include "state.h"
 #include "mapMgr.h"
 #include "menu.h"
+#include "battle.h"
 
 class GameMain{
 public:
@@ -64,6 +65,7 @@ private:
 	};
 
 	class StateBattle:public StateBase{
+		Battle battle;
 		GameMain *obj;
 	public:
 		StateBattle(GameMain *obj);
