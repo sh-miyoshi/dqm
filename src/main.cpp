@@ -6,6 +6,7 @@
 #include "mapData.h"
 #include "party.h"
 #include "charData.h"
+#include "itemMgr.h"
 
 bool g_exitFlag = false;
 unsigned long long g_gameCount = 0;
@@ -73,6 +74,7 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR cmdLine, int cmdS
 	// アプリケーション関係の初期化
 	MapDefine::GetInst()->LoadData();
 	CharDataMgr::GetInst()->LoadData();
+	ItemMgr::GetInst()->LoadData();
 	Party::GetInst()->InitData();// debug(タイトル画面から選択する)
 
 	// メイン処理

@@ -163,6 +163,8 @@
     <ClCompile Include="src\fps.cpp" />
     <ClCompile Include="src\gameMain.cpp" />
     <ClCompile Include="src\idManager.cpp" />
+    <ClCompile Include="src\imteMgr.cpp" />
+    <ClCompile Include="src\itemMgr.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\mapData.cpp" />
     <ClCompile Include="src\mapField.cpp" />
@@ -187,6 +189,7 @@
     <ClInclude Include="src\fps.h" />
     <ClInclude Include="src\gameMain.h" />
     <ClInclude Include="src\idManager.h" />
+    <ClInclude Include="src\itemMgr.h" />
     <ClInclude Include="src\include.h" />
     <ClInclude Include="src\mapData.h" />
     <ClInclude Include="src\mapField.h" />

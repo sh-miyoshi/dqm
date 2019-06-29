@@ -1,0 +1,6 @@
+#id, name, description, power, isTargetSelect, useInFieldOK, useInBattleOK
+0,NULL,NULL,0,false,false,false
+1,薬草,HPを少し回復する,30,true,true,true
+2,魔法の聖水,MPを少し回復する,20,true,true,true
+3,魔物のエサ,魔物が少し懐く,0,true,true,true
+4,ルーラの杖,街に帰る,0,false,true,false
