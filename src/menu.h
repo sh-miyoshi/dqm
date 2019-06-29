@@ -14,21 +14,23 @@ private:
 	class MenuTop:public StateBase {
 		int selWinNo;
 		int moneyWinNo;
-		Menu *obj;
+		Menu* obj;
 	public:
-		MenuTop(Menu *obj);
+		MenuTop(Menu* obj);
 		~MenuTop();
 
 		void Process();
 	};
 
-	// TODO(つよさ画面の表示クラスを追加)
+	// つよさ画面の表示クラスを追加
 	class MenuPower:public StateBase {
 		int selWinNo;
 		int infoWinNo;
-		Menu *obj;
+		Menu* obj;
+
+		void UpdateInfo(int charNo);
 	public:
-		MenuPower(Menu *obj);
+		MenuPower(Menu* obj);
 		~MenuPower();
 
 		void Process();
