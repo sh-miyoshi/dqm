@@ -1,5 +1,6 @@
 #include "include.h"
 #include "party.h"
+#include "itemMgr.h"
 
 void Party::LoadData(std::string fileName) {
 	// TODO(save fileからキャラクタをロードする)
@@ -14,6 +15,11 @@ void Party::InitData() {
 	for( auto i : party ) {
 		i.LoadImage();
 	}
+
+	// debug(デバッグ用に初期アイテムを持たせる)
+	itemIDs.push_back(ItemMgr::ID_薬草);
+	itemIDs.push_back(ItemMgr::ID_薬草);
+	itemIDs.push_back(ItemMgr::ID_魔法の聖水);
 }
 
 void Party::DeleteData() {

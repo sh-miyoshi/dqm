@@ -5,7 +5,7 @@
 #include "charData.h"
 
 class Party {
-	// TODO(Add ItemData)
+	std::vector<int> itemIDs;
 	std::string playerName;
 	std::vector<PartyData> party;
 	int money;
@@ -27,4 +27,5 @@ public:
 	std::string GetPlayerName()const { return playerName; }
 	std::vector<PartyData> GetParty()const { return party; }
 	int GetMoney()const { return money; }
+	std::vector<int> GetItemIDs()const { return itemIDs; }
 };

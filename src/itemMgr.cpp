@@ -26,7 +26,7 @@ void ItemMgr::LoadData() {
 
 Item_t ItemMgr::GetInfo(int id) {
 	ASSERT(isLoaded,"ItemData‚ª‚Ü‚¾ƒ[ƒh‚³‚ê‚Ä‚Ü‚¹‚ñ");
-	if( 0 <= id && id < ID_MAX ) {
+	if( !(0 <= id && id < ID_MAX) ) {
 		AppLogger::Warn(ToString("ID(%d) of ItemData is out of range",id));
 		return itemData[ID_NULL];
 	}

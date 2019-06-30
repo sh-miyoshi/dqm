@@ -1,6 +1,6 @@
 #id, name, description, power, isTargetSelect, useInFieldOK, useInBattleOK
 0,NULL,NULL,0,false,false,false
-1,è–¬è‰,HPã‚’å°‘ã—å›å¾©ã™ã‚‹,30,true,true,true
-2,é­”æ³•ã®è–æ°´,MPã‚’å°‘ã—å›å¾©ã™ã‚‹,20,true,true,true
-3,é­”ç‰©ã®ã‚¨ã‚µ,é­”ç‰©ãŒå°‘ã—æ‡ã,0,true,true,true
-4,ãƒ«ãƒ¼ãƒ©ã®æ–,è¡—ã«å¸°ã‚‹,0,false,true,false
+1,–ò‘,HP‚ğ­‚µ‰ñ•œ‚·‚é,30,true,true,true
+2,–‚–@‚Ì¹…,MP‚ğ­‚µ‰ñ•œ‚·‚é,20,true,true,true
+3,–‚•¨‚ÌƒGƒT,–‚•¨‚ª­‚µ‰ù‚­,0,true,true,true
+4,ƒ‹[ƒ‰‚Ìñ,ŠX‚É‹A‚é,0,false,true,false

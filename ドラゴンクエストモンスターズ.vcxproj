@@ -163,7 +163,6 @@
     <ClCompile Include="src\fps.cpp" />
     <ClCompile Include="src\gameMain.cpp" />
     <ClCompile Include="src\idManager.cpp" />
-    <ClCompile Include="src\imteMgr.cpp" />
     <ClCompile Include="src\itemMgr.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\mapData.cpp" />
