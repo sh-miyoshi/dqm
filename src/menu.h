@@ -72,10 +72,11 @@ private:
 		Menu* obj;
 		int selectWinNo;
 		int infoWinNo;
+		int partyItemNo;
 
 		void UpdateCharInfo(int charNo);
 	public:
-		MenuItemSelectTarget(Menu* obj);
+		MenuItemSelectTarget(Menu* obj,int partyItemNo);
 		~MenuItemSelectTarget();
 
 		void Process();
@@ -83,9 +84,10 @@ private:
 
 	// 道具の使用に関するクラス(結果)
 	class MenuItemResult:public StateBase {
+		int winNo;
 		Menu* obj;
 	public:
-		MenuItemResult(Menu* obj);
+		MenuItemResult(Menu* obj, bool isUse, int partyItemNo, int targetNo);
 		~MenuItemResult();
 
 		void Process();

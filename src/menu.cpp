@@ -3,6 +3,8 @@
 #include "party.h"
 #include "itemMgr.h"
 
+// TODO(stateMgr.Push時にneedUpdateをtrueにして置き、needUpdateがtrueならactive windowを変更する)
+
 //-------------------------------------------------------
 // 全体処理
 //-------------------------------------------------------
@@ -234,13 +236,13 @@ void Menu::MenuItemUseOrThrow::Process() {
 	if( c == 0 ) {// 使う
 		auto item = ItemMgr::GetInst()->GetInfo(Party::GetInst()->GetItemIDs()[partyItemNo]);
 		if( item.useInFieldOK && item.isTargetSelect ) {// キャラクタ単体なら選択画面へ
-			obj->stateMgr.PushState(new MenuItemSelectTarget(obj));
+			obj->stateMgr.PushState(new MenuItemSelectTarget(obj, partyItemNo));
 		} else {
 			// それ以外なら結果クラスですべて処理する
-			obj->stateMgr.PushState(new MenuItemResult(obj));
+			obj->stateMgr.PushState(new MenuItemResult(obj,true, partyItemNo,-1));
 		}
 	} else if( c == 1 )// 捨てる
-		obj->stateMgr.PushState(new MenuItemResult(obj));
+		obj->stateMgr.PushState(new MenuItemResult(obj,false, partyItemNo,-1));
 	else if( CKey::GetInst()->CheckKey(eKEY_CANCEL) == 1 )
 		obj->stateMgr.PopState();
 }
@@ -249,7 +251,9 @@ void Menu::MenuItemUseOrThrow::Process() {
 //-------------------------------------------------------
 // 道具の使用に関するクラス(対象の選択)
 //-------------------------------------------------------
-Menu::MenuItemSelectTarget::MenuItemSelectTarget(Menu* obj):obj(obj), selectWinNo(-1),infoWinNo(-1){
+Menu::MenuItemSelectTarget::MenuItemSelectTarget(Menu* obj,int partyItemNo)
+	:obj(obj), selectWinNo(-1),infoWinNo(-1), partyItemNo(partyItemNo)
+{
 	UpdateCharInfo(0);
 
 	selectWinNo = obj->winMgr.New(270, 100, Party::PARTY_MAX_NUM, 5);
@@ -272,7 +276,7 @@ void Menu::MenuItemSelectTarget::Process() {
 
 	if( selectCharNo != -1 ) {// 決定キーが押されたら
 		// 結果画面へ
-		obj->stateMgr.PushState(new MenuItemResult(obj));
+		obj->stateMgr.PushState(new MenuItemResult(obj,true,partyItemNo, selectCharNo));
 	} else if( CKey::GetInst()->CheckKey(eKEY_CANCEL) == 1 ) {
 		obj->stateMgr.PopState();
 	} else if( nowCursor != prevCursor ) {
@@ -300,11 +304,57 @@ void Menu::MenuItemSelectTarget::UpdateCharInfo(int charNo) {
 //-------------------------------------------------------
 // 道具の使用に関するクラス(結果)
 //-------------------------------------------------------
-Menu::MenuItemResult::MenuItemResult(Menu* obj):obj(obj) {
+Menu::MenuItemResult::MenuItemResult(Menu* obj, bool isUse, int partyItemNo, int targetNo):obj(obj),winNo(-1) {
+	winNo = obj->winMgr.New(320, 110, 9, 12);
+
+	std::string msg;
+	if( isUse ) {// 選択した道具を使用する
+		auto item = ItemMgr::GetInst()->GetInfo(Party::GetInst()->GetItemIDs()[partyItemNo]);
+
+		if( !item.useInFieldOK )
+			msg = "その道具は移動中使えません。";
+		else {
+			msg = Party::GetInst()->GetPlayerName() + "は" + item.name + "を使った/";
+			int power = item.power;
+			switch( Party::GetInst()->GetItemIDs()[partyItemNo] ) {
+			case ItemMgr::ID_薬草:
+				ASSERT(targetNo >= 0, "Target is not selected");// 対象が選択されているか
+				if( Party::GetInst()->Recover(targetNo, true, power, power / 7) ) {
+					Party::GetInst()->DeleteItem(partyItemNo);
+					msg += Party::GetInst()->GetParty()[targetNo].name + "はHPを" + ToString(power) + "回復した!";
+				} else
+					msg += "しかし、失敗した";
+				break;
+			case ItemMgr::ID_魔法の聖水:
+				ASSERT(targetNo >= 0, "Target is not selected");// 対象が選択されているか
+				if( Party::GetInst()->Recover(targetNo, false, power, power / 7) ) {
+					Party::GetInst()->DeleteItem(partyItemNo);
+					msg += Party::GetInst()->GetParty()[targetNo].name + "はMPを" + ToString(power) + "回復した!";
+				} else
+					msg += "しかし、失敗した";
+				break;
+			default:
+				ASSERT(0, "そんな道具は存在しません");// その道具は存在しないか未実装
+				break;
+			}
+		}
+	} else {// 選択した道具を捨てる
+		if( Party::GetInst()->DeleteItem(partyItemNo) ) {
+			auto item = ItemMgr::GetInst()->GetInfo(Party::GetInst()->GetItemIDs()[partyItemNo]);
+			msg = Party::GetInst()->GetPlayerName() + "は" + item.name + "を捨てた。";
+		} else {
+			msg = "その道具は捨てられません!";
+		}
+	}
+
+	obj->winMgr.SetMsg(msg);
 }
 
 Menu::MenuItemResult::~MenuItemResult() {
+	obj->winMgr.Delete(winNo);
 }
 
 void Menu::MenuItemResult::Process() {
+	if( obj->winMgr.UpdateMsg(g_MessageSpeed) )
+		obj->stateMgr.BackToMark();
 }

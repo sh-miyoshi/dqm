@@ -10,6 +10,7 @@
 
 bool g_exitFlag = false;
 unsigned long long g_gameCount = 0;
+int g_MessageSpeed = 3;// TODO(set in global config file)
 
 class Main{
 	class StateTitle:public StateBase{

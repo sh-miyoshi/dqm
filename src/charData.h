@@ -28,6 +28,8 @@ public:
 	void DeleteImage();
 
 	void Draw(CPoint<int> pos);
+
+	bool Recover(bool targetIsHP, int point, int rndMax = 0);
 };
 
 class PartyData:public CharData {

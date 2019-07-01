@@ -26,6 +26,23 @@ void CharData::Draw(CPoint<int> pos) {
 	}
 }
 
+bool CharData::Recover(bool targetIsHP, int point, int rndMax) {
+	if( hp <= 0 )// ‚»‚ÌƒLƒƒƒ‰‚ªŽ€‚ñ‚Å‚¢‚½‚çŽ¸”s(AliveŠÖ”‚Å‘Î‰ž)
+		return false;
+	int& target = targetIsHP ? hp : mp;
+	int& max = targetIsHP ? hpMax : mpMax;
+	if( target < max ) {
+		unsigned recover = point;
+		if( rndMax > 0 )// —”‚ð‚Â‚¯‚é‚È‚ç
+			recover += GetRand(rndMax - 1);// ‚»‚Ì•ª‰ÁŽZ
+		target += recover;
+		if( target > max )
+			target = max;
+		return true;
+	}
+	return false;
+}
+
 void CharDataMgr::LoadData() {
 	const std::string inputFile = def::TEXT_FILE_PATH + "charData.csv";
 	CSV data(inputFile.c_str(), CSV::MODE_READ);

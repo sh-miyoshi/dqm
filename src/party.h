@@ -26,6 +26,10 @@ public:
 
 	std::string GetPlayerName()const { return playerName; }
 	std::vector<PartyData> GetParty()const { return party; }
+	bool Recover(int targetNo, bool targetIsHP,int point, int rndMax);
 	int GetMoney()const { return money; }
+
 	std::vector<int> GetItemIDs()const { return itemIDs; }
+	bool AddItem(int itemID);
+	bool DeleteItem(int itemNo);
 };

@@ -12,3 +12,4 @@
 
 extern bool g_exitFlag;
 extern unsigned long long g_gameCount;
+extern int g_MessageSpeed;
