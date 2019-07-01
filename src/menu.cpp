@@ -148,8 +148,9 @@ void Menu::MenuPower::UpdateInfo(int charNo) {
 // 道具の使用に関するクラス(道具の選択)
 //-------------------------------------------------------
 Menu::MenuItemSelect::MenuItemSelect(Menu* obj)
-	:obj(obj), itemWinNo(-1), pageNo(0),descWinNo(-1)
-{
+	:obj(obj), itemWinNo(-1), pageNo(0), descWinNo(-1) {
+	UpdateItemDesc(0);
+
 	itemWinNo = obj->winMgr.New(130, 50, ITEM_DRAW_MAX, 7);
 	obj->winMgr.SetPageData(Party::GetInst()->GetItemIDs().size(), ITEM_DRAW_MAX);
 	UpdateItemList();
@@ -166,7 +167,8 @@ void Menu::MenuItemSelect::Process() {
 	int nowCursor = obj->winMgr.GetCursor();
 
 	if( selectItemNo != -1 ) {// 決定キーが押されたら
-		// TODO(道具の使い道の選択へ)
+		// 道具の使い道の選択へ
+		obj->stateMgr.PushState(new MenuItemUseOrThrow(obj, selectItemNo));
 	} else if( obj->winMgr.PageProcess() ) {// ページ移動だったら
 		UpdateItemList();
 	} else if( CKey::GetInst()->CheckKey(eKEY_CANCEL) == 1 ) {
@@ -181,7 +183,7 @@ void Menu::MenuItemSelect::UpdateItemList() {
 	auto partyItemIDs = Party::GetInst()->GetItemIDs();
 	for( int i = 0; i < ITEM_DRAW_MAX; i++ ) {
 		int itemNo = obj->winMgr.GetNowPage() * ITEM_DRAW_MAX + i;
-		if( itemNo >= partyItemIDs.size() ) {
+		if( itemNo >= (int)partyItemIDs.size() ) {
 			break;
 		}
 		lstr.push_back(ItemMgr::GetInst()->GetInfo(partyItemIDs[itemNo]).name);
@@ -190,37 +192,115 @@ void Menu::MenuItemSelect::UpdateItemList() {
 }
 
 void Menu::MenuItemSelect::UpdateItemDesc(int itemNo) {
-	// TODO(未実装)
+	static const int MSG_NUM = 7;
+	static const int WIN_DRAW_MAX = 3;
+
+	auto partyItemIDs = Party::GetInst()->GetItemIDs();
+	if( 0 <= itemNo && itemNo < (int)partyItemIDs.size() ) {
+		int active = obj->winMgr.GetActive();
+		if( !obj->winMgr.SetActive(descWinNo) ) {
+			descWinNo = obj->winMgr.New(340, 70, WIN_DRAW_MAX, MSG_NUM);
+		}
+
+		std::list<std::string> lstr;
+		lstr.push_back("説明:");
+		auto item = ItemMgr::GetInst()->GetInfo(partyItemIDs[itemNo]);
+		ASSERT(item.description.size() < MSG_NUM * 2 * 2, "Item Description is too long");// 折り返しても2行まで
+		lstr.push_back(" " + item.description);
+
+		obj->winMgr.SetList(lstr);
+		obj->winMgr.SetListData(false, true);
+		obj->winMgr.SetActive(active);
+	}
 }
 
 //-------------------------------------------------------
 // 道具の使用に関するクラス(使い道の選択)
 //-------------------------------------------------------
-Menu::MenuItemUseOrThrow::MenuItemUseOrThrow(Menu* obj) {
+Menu::MenuItemUseOrThrow::MenuItemUseOrThrow(Menu* obj, int partyItemNo)
+	:obj(obj), winNo(-1) , partyItemNo(partyItemNo)
+{
+	winNo = obj->winMgr.New(270, 110, 2, 4);
+	const std::string str[] = { "使う","捨てる" };
+	obj->winMgr.SetList(str, 2);
 }
 
 Menu::MenuItemUseOrThrow::~MenuItemUseOrThrow() {
+	obj->winMgr.Delete(winNo);
 }
 
 void Menu::MenuItemUseOrThrow::Process() {
+	int c = obj->winMgr.MoveCursor();
+	if( c == 0 ) {// 使う
+		auto item = ItemMgr::GetInst()->GetInfo(Party::GetInst()->GetItemIDs()[partyItemNo]);
+		if( item.useInFieldOK && item.isTargetSelect ) {// キャラクタ単体なら選択画面へ
+			obj->stateMgr.PushState(new MenuItemSelectTarget(obj));
+		} else {
+			// それ以外なら結果クラスですべて処理する
+			obj->stateMgr.PushState(new MenuItemResult(obj));
+		}
+	} else if( c == 1 )// 捨てる
+		obj->stateMgr.PushState(new MenuItemResult(obj));
+	else if( CKey::GetInst()->CheckKey(eKEY_CANCEL) == 1 )
+		obj->stateMgr.PopState();
 }
+
 
 //-------------------------------------------------------
 // 道具の使用に関するクラス(対象の選択)
 //-------------------------------------------------------
-Menu::MenuItemSelectTarget::MenuItemSelectTarget(Menu* obj) {
+Menu::MenuItemSelectTarget::MenuItemSelectTarget(Menu* obj):obj(obj), selectWinNo(-1),infoWinNo(-1){
+	UpdateCharInfo(0);
+
+	selectWinNo = obj->winMgr.New(270, 100, Party::PARTY_MAX_NUM, 5);
+	std::list<std::string> lstr;
+	for( auto p : Party::GetInst()->GetParty() ) {
+		lstr.push_back(p.nickName);
+	}
+	obj->winMgr.SetList(lstr);
 }
 
 Menu::MenuItemSelectTarget::~MenuItemSelectTarget() {
+	obj->winMgr.Delete(selectWinNo);
+	obj->winMgr.Delete(infoWinNo);
 }
 
 void Menu::MenuItemSelectTarget::Process() {
+	int prevCursor = obj->winMgr.GetCursor();
+	int selectCharNo = obj->winMgr.MoveCursor();
+	int nowCursor = obj->winMgr.GetCursor();
+
+	if( selectCharNo != -1 ) {// 決定キーが押されたら
+		// 結果画面へ
+		obj->stateMgr.PushState(new MenuItemResult(obj));
+	} else if( CKey::GetInst()->CheckKey(eKEY_CANCEL) == 1 ) {
+		obj->stateMgr.PopState();
+	} else if( nowCursor != prevCursor ) {
+		UpdateCharInfo(nowCursor);
+	}
+}
+
+void Menu::MenuItemSelectTarget::UpdateCharInfo(int charNo) {
+	int active = obj->winMgr.GetActive();
+
+	if( !obj->winMgr.SetActive(infoWinNo) )
+		infoWinNo = obj->winMgr.New(420, 140, 4, 6);
+	std::string str[4];
+	auto partyInfo = Party::GetInst()->GetParty();
+	str[0] = partyInfo[charNo].nickName;
+	str[1] = ToString("Level    %3d", partyInfo[charNo].lv);
+	str[2] = ToString("HP   %3d/%3d", partyInfo[charNo].hp, partyInfo[charNo].hpMax);
+	str[3] = ToString("MP   %3d/%3d", partyInfo[charNo].mp, partyInfo[charNo].mpMax);
+	obj->winMgr.SetList(str, 4);
+	obj->winMgr.SetListData(false, false);
+
+	obj->winMgr.SetActive(active);
 }
 
 //-------------------------------------------------------
 // 道具の使用に関するクラス(結果)
 //-------------------------------------------------------
-Menu::MenuItemResult::MenuItemResult(Menu* obj) {
+Menu::MenuItemResult::MenuItemResult(Menu* obj):obj(obj) {
 }
 
 Menu::MenuItemResult::~MenuItemResult() {

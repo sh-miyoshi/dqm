@@ -57,9 +57,11 @@ private:
 
 	// 道具の使用に関するクラス(使い道の選択)
 	class MenuItemUseOrThrow:public StateBase {
+		int partyItemNo;
+		int winNo;
 		Menu* obj;
 	public:
-		MenuItemUseOrThrow(Menu* obj);
+		MenuItemUseOrThrow(Menu* obj, int partyItemNo);
 		~MenuItemUseOrThrow();
 
 		void Process();
@@ -68,6 +70,10 @@ private:
 	// 道具の使用に関するクラス(対象の選択)
 	class MenuItemSelectTarget:public StateBase {
 		Menu* obj;
+		int selectWinNo;
+		int infoWinNo;
+
+		void UpdateCharInfo(int charNo);
 	public:
 		MenuItemSelectTarget(Menu* obj);
 		~MenuItemSelectTarget();
