@@ -94,11 +94,14 @@ private:
 	};
 
 	std::vector<int> charParamWinNo;
+	bool requireActivateTopWin;
 	RtnCode rtnCode;
 	WinMgr winMgr;
 	StateMgr stateMgr;
 
 	void UpdateParamWindow();
+	void PushState(StateBase *state);
+	void PopState();
 public:
 	Menu();
 	~Menu();
