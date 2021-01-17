@@ -93,6 +93,17 @@ private:
 		void Process();
 	};
 
+	// ÇªÇÃëºê›íËÇ»Ç«Ç…ä÷Ç∑ÇÈÉNÉâÉX
+	class MenuOption:public StateBase {
+		Menu* obj;
+		int winNo;
+	public:
+		MenuOption(Menu* obj);
+		~MenuOption();
+
+		void Process();
+	};
+
 	std::vector<int> charParamWinNo;
 	bool requireActivateTopWin;
 	RtnCode rtnCode;

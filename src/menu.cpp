@@ -392,3 +392,60 @@ void Menu::MenuItemResult::Process() {
 	if( obj->winMgr.UpdateMsg(g_MessageSpeed) )
 		obj->stateMgr.BackToMark();
 }
+
+//-------------------------------------------------------
+// その他設定などに関するクラス
+//-------------------------------------------------------
+Menu::MenuOption::MenuOption(Menu* obj):obj(obj), winNo(-1) {
+}
+
+Menu::MenuOption::~MenuOption() {
+}
+
+void Menu::MenuOption::Process() {
+	if( obj->requireActivateTopWin ) {
+		static const std::string str[] = {
+			"並び替え",
+			"表示速度",
+			"キー設定",
+			"情報",
+			"冒険の書",
+			"終了",
+		};
+
+		int n = sizeof(str) / sizeof(str[0]);
+		if( !obj->winMgr.SetActive(winNo) )
+			winNo = obj->winMgr.New(140, 70, n, 5);
+		obj->winMgr.SetList(str, n);
+
+		obj->requireActivateTopWin = false;
+	}
+
+	if( CKey::GetInst()->CheckKey(eKEY_CANCEL) == 1 ) {
+		obj->PopState();
+		return;
+	}
+
+	switch( obj->winMgr.MoveCursor() ) {
+	case 0: // 並び替え
+		ASSERT(0, "未実装");// TODO
+		break;
+	case 1: // 表示速度
+		ASSERT(0, "未実装");// TODO
+		break;
+	case 2: // キー設定
+		ASSERT(0, "未実装");// TODO
+		break;
+	case 3: // 情報
+		ASSERT(0, "未実装");// TODO
+		break;
+	case 4: // 冒険の書
+		ASSERT(0, "未実装");// TODO
+		break;
+	case 5: // 終了
+		ASSERT(0, "未実装");// TODO
+		break;
+	}
+
+
+}
